@@ -292,6 +292,7 @@ async function processData(data, query, callback) {
                   name: "[YouTube] " + name,
                   embed: url
                     .replace("/watch?v=", "/embed/")
+                    .replace("youtu.be/", "youtube.com/embed/")
                     .replace(
                       "www.dailymotion.com/video/",
                       "www.dailymotion.com/embed/video/"
