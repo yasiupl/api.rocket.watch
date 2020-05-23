@@ -11,10 +11,10 @@ LINTER := $(NPM_BINARY_PREFIX)/eslint
 .PHONY: env-up env-down serve ci build lint test container
 
 launch: setup open-browser ## run the development server and open browser
-	PORT=$(PORT) node index.js
+	PORT=$(PORT) node src/index.js
 	
 serve: setup ## run the development server
-	PORT=$(PORT) node index.js
+	PORT=$(PORT) node src/index.js
 
 ci: audit setup lint build test container ## run all tests and build all artifacts
 	@echo "Not implemented"; false

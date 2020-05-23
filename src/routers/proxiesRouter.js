@@ -1,6 +1,6 @@
 var express = require("express");
 var Router = express.Router();
-const keys = require("../config.json");
+const keys = require("../../config.json");
 const webrequest = require("request");
 
 const routes = [

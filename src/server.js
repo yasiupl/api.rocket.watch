@@ -1,18 +1,21 @@
 const Storage = require("node-storage");
-const request = require("request");
+const getJSON = require("./js/utils.js").getJSON;
+const QueryString = require("./js/utils.js").QueryString;
 
-const agencyType = require("./src/scrape/agencyType.js")
-const agencyShortName = require("./src/scrape/agencyShortName.js")
 
-const config = require("./config.json");
+const config = require("../config.json");
 const sources = require("./data/sources.json");
-const storage = new Storage("./cache.json");
+const storage = new Storage("../cache.json");
+
+const processLaunch = require("./endpoints/launch.js");
+const processAgency = require("./endpoints/agency.js");
+const processRocket = require("./endpoints/rocket.js");
+const processLocation = require("./endpoints/location.js");
+const processPad = require("./endpoints/pad.js");
 
 const envargs = process.argv.slice(2);
 
-
-
-function load(query, callback) {
+function loadQuery(query, callback) {
   callback = callback || function () { };
   var queryParams = QueryString(query);
   var query = query.replace(/(\?|&)(page=)([0-9])/g, "");
@@ -145,49 +148,12 @@ async function processData(data, query, callback) {
     // override /launch
     for (let i in data.launches) {
 
-      let launch = data.launches[i];
-
-      launch.img = null;
-      launch.name = launch.name.split("|")[0] + "|" + launch.name.split("|")[1].split(" (")[0];
-      launch.mission = launch.name.split("| ")[1].replace("SpX ", "");
-      launch.tolaunch = Math.floor((Date.parse(launch.net) - Date.now()) / 1000);
-      launch.description =
-        launch.failreason ||
-        launch.holdreason ||
-        (launch.missions && launch.missions[0] && launch.missions[0].description) ||
-        "";
-   
-      //verbose
-
-      if (launch.missions && launch.missions[0]) {
-        launch.mission = launch.missions[0].name.split(" (")[0];
-        launch.name = launch.rocket.name + " | " + launch.mission;
-      }
-
-      if (
-        (launch.lsp && typeof launch.lsp === "object") ||
-        (launch.rocket && launch.rocket.agencies) ||
-        (launch.location && launch.location.pads)
-      ) {
-        launch.agency = processAgency(
-          launch.lsp ||
-          launch.rocket.agencies[0] ||
-          (launch.location.pads[0] && launch.location.pads[0].agencies[0])
-        );
-        delete launch.lsp;
-      }
-
-      if (launch.rocket) {
-        launch.rocket = processRocket(launch.rocket);
-      }
-
-      if (launch.location) {
-        launch.location = processLocation(launch.location);
-      }
+      let launch = processLaunch(data.launches[i]);
 
       if (format.match("live")) {
         launch.media = {
           badge: [],
+          button: [],
           audio: [],
           video: [],
           photo: [],
@@ -198,6 +164,15 @@ async function processData(data, query, callback) {
           twitter: []
         };
 
+
+        // generic info
+
+        if (launch.probability != "-1" && [3, 4, 7].indexOf(launch.statuscode) == -1) {
+          launch.media.badge.push({
+            name: launch.probability + "% probability",
+            desc: "Launch probability"
+          });
+        }
 
         var custom = (sources.norminal.media || []).concat(sources.custom.byMissionName[launch.mission] || [])
           .concat(sources.custom.byMissionId[launch.id] || [])
@@ -458,165 +433,6 @@ async function processData(data, query, callback) {
   }
 }
 
-function processAgency(data) {
-  var data = data || {};
-  modelAgency = {
-    id: data.id || -1,
-    name: data.name || "Unknown",
-    abbrev: (data.abbrev && data.abbrev.split("-")[0]) || "UNK",
-    shortname: data.name && data.name.length > 11 ? data.abbrev : data.name || "UNK",
-    description: "",
-    founded: "",
-    type: agencyType(data.type),
-    typeCode: data.type || -1,
-    islsp: data.islsp || 0,
-    countryCode: data.countryCode || "UNK",
-    countryFlag: config.deploymentURL + "flag/" +
-      data.countryCode.split(",")[0].toLowerCase(),
-    info: data.infoURL || (data.infoURLs && data.infoURLs[0]) || "",
-    wiki: (data.wikiURL || "").replace("http://", "https://"),
-    icon: data.infoURL || (data.infoURLs && data.infoURLs[0]) ?
-      config.deploymentURL + "logo/" + (data.infoURL || data.infoURLs[0]) :
-      "",
-  };
-  if (!data) return modelAgency;
-  if (modelAgency.countryCode.split(",").length > 1) {
-    modelAgency.countryCode = agencyType(modelAgency.typeCode);
-    modelAgency.countryFlag = "https://rocket.watch/res/multinational.png";
-  }
-  modelAgency.social = {};
-  modelAgency.social.youtube = (
-    data.infoURLs.find(function (a) {
-      return a.match("youtube.com/channel/");
-    }) || ""
-  ).split("youtube.com/channel/")[1];
-  modelAgency.social.facebook = (
-    data.infoURLs.find(function (a) {
-      return a.match("facebook.com/");
-    }) || ""
-  ).split("facebook.com/")[1];
-  modelAgency.social.twitter = (
-    data.infoURLs.find(function (a) {
-      return a.match("twitter.com/");
-    }) || ""
-  ).split("twitter.com/")[1];
-  modelAgency.social.reddit =
-    sources.company[modelAgency.abbrev.toLowerCase()] &&
-    sources.company[modelAgency.abbrev.toLowerCase()].reddit;
-
-  return modelAgency;
-}
-
-function processRocket(data) {
-  modelRocket = {
-    id: data.id || -1,
-    name: data.name || "Unknown",
-    info: data.infoURL || (data.infoURLs && data.infoURLs[0]) || "",
-    wiki: (data.wikiURL || "").replace("http://", "https://"),
-    img: (data.imageURL || "").replace(
-      "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png",
-      ""
-    ),
-    icon: (data.imageURL || "")
-      .replace(
-        "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png",
-        ""
-      )
-      .replace("2560", "320")
-      .replace("1920", "320")
-      .replace("1440", "320")
-      .replace("1280", "320")
-      .replace("1440", "320")
-      .replace("1080", "320")
-      .replace("1024", "320")
-      .replace("960", "320")
-      .replace("800", "320")
-      .replace("768", "320")
-      .replace("720", "320")
-      .replace("640", "320")
-      .replace("480", "320"),
-    family: {
-      id: (data.family && (data.family && data.family.id)) || -1,
-      name: data.familyname || (data.family && data.family.name) || "Unknown",
-      agencies: data.agencies || [{
-        id: -1,
-        name: "Unknown"
-      }]
-    },
-    agency: {
-      id: -1,
-      name: "Unknown"
-    }
-  };
-
-  if (data.family) {
-    data.family.agencies =
-      (data.family.agencies && data.family.agencies.split(",")) || {};
-    for (var i in data.family.agencies) {
-      modelRocket.family.agencies[i] = {
-        id: parseInt(data.family.agencies[i]) || -1,
-        name: agencyShortName(data.family.agencies[i])
-      };
-    }
-  }
-
-  modelRocket.agency = modelRocket.family.agencies[0] || {
-    id: -1,
-    name: "Unknown"
-  };
-  return modelRocket;
-}
-
-function processPad(data) {
-  modelPad = {
-    id: data.id || -1,
-    name: data.name || "Unknown",
-    info: data.infoURL || (data.infoURLs && data.infoURLs[0]) || "",
-    wiki: (data.wikiURL || "").replace("http://", "https://"),
-    map: "https://www.google.com/maps/embed/v1/place?key=" +
-      config.keys.google +
-      "&maptype=satellite&q=" +
-      data.latitude +
-      "," +
-      data.longitude,
-    img: config.deploymentURL + "map/?zoom=16&maptype=satellite&size=256x256&scale=1&center=" +
-      data.latitude +
-      "," +
-      data.longitude,
-    icon: config.deploymentURL + "map/?zoom=16&maptype=satellite&size=128x128&scale=1&center=" +
-      data.latitude +
-      "," +
-      data.longitude,
-    agency: {
-      id: -1,
-      name: "Unknown"
-    }
-  };
-  if (data.agencies && typeof data.agencies[0] === "object") {
-    //modelPad.agencies = data.agencies;
-    modelPad.agency = processAgency(data.agencies[0]);
-  }
-  return modelPad;
-}
-
-function processLocation(data) {
-  modelLocation = {
-    id: data.id || -1,
-    name: data.name || "Unknown",
-    countryCode: data.countrycode || "UNK",
-    countryFlag: config.deploymentURL + "flag/" +
-      data.countrycode.split(",")[0].toLowerCase(),
-    map: "https://www.google.com/maps/embed/v1/place?key=" +
-      config.keys.google +
-      "&maptype=satellite&q=Launch+Centre+" +
-      data.name.replace(" ", "+"),
-    img: config.deploymentURL + "map/?zoom=16&maptype=satellite&size=128x128&scale=1&center=Launch+Centre+" +
-      data.name.replace(" ", "+"),
-    info: data.infoURL || data.infoURLs[0] || "",
-    wiki: (data.wikiURL || "").replace("http://", "https://")
-  };
-  return modelLocation;
-}
 
 async function addSource(launch, name, url, fallback) {
   url = (url || "").replace("http://", "https://");
@@ -706,16 +522,7 @@ async function addSource(launch, name, url, fallback) {
                   ),
                   share: url
                 });
-              } else if (
-                fallback &&
-                !RegExp(
-                  url.split("//")[1]
-                    .replace("www.", "")
-                    .split("/")[0]
-                ).test(sources.embed_blacklist)
-              ) {
-                fallback();
-              }
+              } else if(typeof fallback === "function") fallback();
             }
           }
         }
@@ -724,45 +531,4 @@ async function addSource(launch, name, url, fallback) {
   }
 };
 
-function QueryString(url, callback) {
-  var g = {};
-  var l = (url && url.split("?")[1]) || "";
-  var k = l.split("&");
-  for (var m = 0; m < k.length; m++) {
-    var j = k[m].split("=");
-    if (typeof g[j[0]] === "undefined") {
-      g[j[0]] = decodeURIComponent(j[1]);
-    } else {
-      if (typeof g[j[0]] === "string") {
-        var h = [g[j[0]], decodeURIComponent(j[1])];
-        g[j[0]] = h;
-      } else {
-        g[j[0]].push(decodeURIComponent(j[1]));
-      }
-    }
-  }
-  if (callback) callback(g);
-  return g;
-}
-
-function getJSON(url) {
-  return new Promise((resolve, reject) => {
-    request({
-      url: url,
-      json: true,
-      headers: {
-        'User-Agent': 'rocket.watch'
-      }
-    },
-      function (error, response, body) {
-        if (error) reject(error);
-        resolve(body);
-      }
-    );
-  });
-}
-
-module.exports = {
-  load: load,
-  storage: storage
-};
+module.exports = loadQuery;
