@@ -48,6 +48,7 @@ audit:
 	npm audit
 
 setup: node_modules config.json
+	rm -f cache.json
 
 test-e2e:
 	tests/e2e/smoke-test.sh
