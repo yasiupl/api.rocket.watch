@@ -228,19 +228,19 @@ async function processData(data, query, callback) {
           ).then(d => {
             var data = d[0];
             if (data) {
-              if (data.reuse.core) {
+              if (data.reuse && data.reuse.core) {
                 launch.media.badge.push({
                   img: "https://rocket.watch/res/reuse.png",
                   name: "Reused booster"
                 });
               }
-              if (data.reuse.capsule) {
+              if (data.reuse && data.reuse.capsule) {
                 launch.media.badge.push({
                   img: "https://rocket.watch/res/reuse.png",
                   name: "Reused capsule"
                 });
               }
-              if (data.links.reddit_launch) {
+              if (data.links && data.links.reddit_launch) {
                 var id = data.links.reddit_launch
                   .split("/comments/")[1]
                   .split("/")[0];
@@ -249,7 +249,8 @@ async function processData(data, query, callback) {
                   embed: "https://reddit-stream.com/comments/" + id,
                   share: "https://reddit.com/comments/" + id
                 });
-              } else if (data.links.reddit_campaign) {
+              }
+              if (data.links && data.links.reddit_campaign) {
                 var id = data.links.reddit_campaign
                   .split("/comments/")[1]
                   .split("/")[0];

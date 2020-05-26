@@ -29,13 +29,13 @@ function processLaunch(launch) {
 
 	if (
 		(launch.lsp && typeof launch.lsp === "object") ||
-		(launch.rocket && launch.rocket.agencies) ||
-		(launch.location && launch.location.pads)
+		(launch.rocket && launch.rocket.agencies && launch.rocket.agencies.length) ||
+		(launch.location && launch.location.pads && launch.location.pads.length)
 	) {
 		launch.agency = processAgency(
 			launch.lsp ||
-			launch.rocket.agencies[0] ||
-			(launch.location.pads[0] && launch.location.pads[0].agencies[0])
+			(launch.rocket.agencies[0]) ||
+			(launch.location.pads[0].agencies && launch.location.pads[0].agencies.length && launch.location.pads[0].agencies[0])
 		);
 		delete launch.lsp;
 	}
