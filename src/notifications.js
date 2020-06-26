@@ -3,8 +3,6 @@ var https = require("https");
 var lastloop = new Date();
 var keys = require("../config.json").keys;
 
-console.log(keys.onesignal)
-
 module.exports = {
 	onesignal: onesignal,
 	twitter: twitter,
