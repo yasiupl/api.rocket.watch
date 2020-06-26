@@ -170,7 +170,7 @@
       ],
       "spx": [
         {
-          "when": "live",
+          "when": "go",
           "is": "audio",
           "name": "Hosted webcast audio",
           "url": "https://codav.de/icecast/spacex-low.mp3"
@@ -454,6 +454,12 @@
         {
           "name": "r/SpaceX In-Flight Abort Test Official Launch Discussion & Updates Thread",
           "url": "https://www.reddit.com/r/spacex/comments/eq24ap/rspacex_inflight_abort_test_official_launch/"
+        }
+      ],
+      "1001": [
+        {
+          "name": "r/SpaceX CCtCap Demonstration Mission 2 General Live Coverage & Party Thread (2nd Attempt)",
+          "url": "https://www.reddit.com/r/spacex/comments/gsuyin/rspacex_cctcap_demonstration_mission_2_general/"
         }
       ],
       "864": [

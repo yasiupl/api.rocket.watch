@@ -1,9 +1,7 @@
 var RocketWatch = require("./server.js");
 var https = require("https");
 var lastloop = new Date();
-var keys = require("./config.json").keys;
-
-console.log(keys.onesignal)
+var keys = require("../config.json").keys;
 
 module.exports = {
 	onesignal: onesignal,
