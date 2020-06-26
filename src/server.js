@@ -532,4 +532,7 @@ async function addSource(launch, name, url, fallback) {
   }
 };
 
-module.exports = loadQuery;
+module.exports = {
+  loadQuery: loadQuery,
+  storage: storage
+}
