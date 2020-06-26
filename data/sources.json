@@ -80,8 +80,8 @@
           }
         ]
       },
-      "nrol": {
-        "name": "NROL",
+      "nro": {
+        "name": "NRO",
         "img": "https://i.imgur.com/WVUYwu2.png",
         "desc": "Top Secret payloads for US's National Reconnaissance Office."
       },
@@ -170,10 +170,16 @@
       ],
       "spx": [
         {
-          "when": "live",
+          "when": "go",
           "is": "audio",
           "name": "Hosted webcast audio",
           "url": "https://codav.de/icecast/spacex-low.mp3"
+        },
+        {
+          "when": "go",
+          "is": "audio",
+          "name": "Technical webcast audio",
+          "url": "https://codav.de/icecast/spacex-netonly-low.mp3"
         },
         {
           "when": "go",
@@ -277,7 +283,12 @@
           "url": "//tools.yasiu.pl/hlsplayer/?//tsenki-htlive.cdn.ngenix.net/live/_definst_/tsenkitv.sdp/playlist.m3u8",
           "name": "roscosmos.ru Official livestream"
         }
-      ]
+      ],
+      "vo": [{
+        "when": "go",
+	"name": "[Flightaware] Cosmic Girl live location",
+        "url": "https://flightaware.com/live/flight/N744VG"
+      }]
     },
     "byLocationID": {
       "16": [
@@ -445,16 +456,33 @@
           "url": "https://www.reddit.com/r/spacex/comments/9ggtma/bfr_manned_moon_mission_thread_livestream_at/"
         }
       ],
+	"1093": [
+        {
+          "name": "Reddit Party Thread",
+          "url": "https://reddit-stream.com/comments/gsuyin/"
+        }
+      ],
       "1000": [
         {
           "name": "r/SpaceX In-Flight Abort Test Official Launch Discussion & Updates Thread",
           "url": "https://www.reddit.com/r/spacex/comments/eq24ap/rspacex_inflight_abort_test_official_launch/"
         }
       ],
+      "1093": [
+	{
+  	  "name": "r/SpaceX Launch Discussion",
+	  "url": "https://reddit-stream.com/comments/gsuyin/"
+        },
+	{
+          "is": "last",
+          "name": "r/SpaceX IRC",
+          "url": "https://kiwiirc.com/client/irc.esper.net/?nick=RocketWatchUser?#spacex"
+        }
+      ],
       "864": [
         {
           "name": "Reddit live",
-          "url": "//www.reddit.com/live/10eml9bua3no8"
+          "url": "https://reddit-stream.com/comments/gsuyin/"
         },
         {
           "name": "Falcon Heavy Static Fire",
