@@ -80,8 +80,8 @@
           }
         ]
       },
-      "nrol": {
-        "name": "NROL",
+      "nro": {
+        "name": "NRO",
         "img": "https://i.imgur.com/WVUYwu2.png",
         "desc": "Top Secret payloads for US's National Reconnaissance Office."
       },
@@ -174,6 +174,12 @@
           "is": "audio",
           "name": "Hosted webcast audio",
           "url": "https://codav.de/icecast/spacex-low.mp3"
+        },
+        {
+          "when": "go",
+          "is": "audio",
+          "name": "Technical webcast audio",
+          "url": "https://codav.de/icecast/spacex-netonly-low.mp3"
         },
         {
           "when": "go",
@@ -278,11 +284,13 @@
           "name": "roscosmos.ru Official livestream"
         }
       ],
-      "vo": [{
-        "when": "go",
-	      "name": "[Flightaware] Cosmic Girl live location",
-        "url": "https://flightaware.com/live/flight/N744VG"
-      }]
+      "vo": [
+        {
+          "when": "go",
+          "name": "[Flightaware] Cosmic Girl live location",
+          "url": "https://flightaware.com/live/flight/N744VG"
+        }
+      ]
     },
     "byLocationID": {
       "16": [
@@ -462,10 +470,21 @@
           "url": "https://www.reddit.com/r/spacex/comments/gsuyin/rspacex_cctcap_demonstration_mission_2_general/"
         }
       ],
+      "1093": [
+        {
+          "name": "r/SpaceX Launch Discussion",
+          "url": "https://reddit-stream.com/comments/gsuyin/"
+        },
+        {
+          "is": "last",
+          "name": "r/SpaceX IRC",
+          "url": "https://kiwiirc.com/client/irc.esper.net/?nick=RocketWatchUser?#spacex"
+        }
+      ],
       "864": [
         {
           "name": "Reddit live",
-          "url": "//www.reddit.com/live/10eml9bua3no8"
+          "url": "https://reddit-stream.com/comments/gsuyin/"
         },
         {
           "name": "Falcon Heavy Static Fire",

@@ -1,11 +1,12 @@
 {
   "launches": [{
-    "id": 1001,
+    "id": "dm2",
     "name": "Crew Dragon Endeavor | ISS Docking",
-    "windowstart": "May 31, 2020 13:00:00 UTC",
-    "windowend": "May 31, 2020 13:00:00 UTC",
-    "net": "May 31, 2020 13:00:00 UTC",
-    "status": 6,
+    "windowstart": "May 31, 2020 15:00:00 UTC",
+    "windowend": "May 31, 2020 15:00:00 UTC",
+    "net": "May 31, 2020 15:00:00 UTC",
+    "status": "In Flight",
+    "statuscode": 6,
     "inhold": 0,
     "tbdtime": 0,
     "vidURLs": ["https://www.youtube.com/watch?v=bIZsnKGV8TE" , "https://www.youtube.com/watch?v=pMsvr55cTZ0"],
@@ -93,3 +94,4 @@
   "offset": 0,
   "count": 1
 }
+
