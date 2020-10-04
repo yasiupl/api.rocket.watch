@@ -284,11 +284,13 @@
           "name": "roscosmos.ru Official livestream"
         }
       ],
-      "vo": [{
-        "when": "go",
-	"name": "[Flightaware] Cosmic Girl live location",
-        "url": "https://flightaware.com/live/flight/N744VG"
-      }]
+      "vo": [
+        {
+          "when": "go",
+          "name": "[Flightaware] Cosmic Girl live location",
+          "url": "https://flightaware.com/live/flight/N744VG"
+        }
+      ]
     },
     "byLocationID": {
       "16": [
@@ -456,24 +458,24 @@
           "url": "https://www.reddit.com/r/spacex/comments/9ggtma/bfr_manned_moon_mission_thread_livestream_at/"
         }
       ],
-	"1093": [
-        {
-          "name": "Reddit Party Thread",
-          "url": "https://reddit-stream.com/comments/gsuyin/"
-        }
-      ],
       "1000": [
         {
           "name": "r/SpaceX In-Flight Abort Test Official Launch Discussion & Updates Thread",
           "url": "https://www.reddit.com/r/spacex/comments/eq24ap/rspacex_inflight_abort_test_official_launch/"
         }
       ],
+      "1001": [
+        {
+          "name": "r/SpaceX CCtCap Demonstration Mission 2 General Live Coverage & Party Thread (2nd Attempt)",
+          "url": "https://www.reddit.com/r/spacex/comments/gsuyin/rspacex_cctcap_demonstration_mission_2_general/"
+        }
+      ],
       "1093": [
-	{
-  	  "name": "r/SpaceX Launch Discussion",
-	  "url": "https://reddit-stream.com/comments/gsuyin/"
+        {
+          "name": "r/SpaceX Launch Discussion",
+          "url": "https://reddit-stream.com/comments/gsuyin/"
         },
-	{
+        {
           "is": "last",
           "name": "r/SpaceX IRC",
           "url": "https://kiwiirc.com/client/irc.esper.net/?nick=RocketWatchUser?#spacex"
